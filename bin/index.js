@@ -13,34 +13,34 @@ pg.init(20, {
 /**
  * @namespace
  */
-var git = {};
+var gs = {};
 
 
 /**
  * @param {string=} opt_since format: YYYY-MM-DD
  * @param {string=} opt_until format: YYYY-MM-DD
  */
-git.sendDate = function(opt_since, opt_until) {
+gs.sendDate = function(opt_since, opt_until) {
   if (opt_since) {
     opt_since = '&&since=' + opt_since;
   } else {opt_since = ''}
   if (opt_until) {
     opt_until = '&&until=' + opt_until;
   } else {opt_until = ''}
-  git.date = opt_since + opt_until;
+  gs.date = opt_since + opt_until;
 };
 
 
 /**
  * @namespace
  */
-git.date = '';
+gs.date = '';
 
 
 /**
  * @param {string} Table
  */
-git.cleanTable = function(Table) {
+gs.cleanTable = function(Table) {
   pg.exec('DELETE FROM ' + Table, function() {
     console.log(Table + ' table clean');
   }, console.error);
@@ -51,10 +51,10 @@ git.cleanTable = function(Table) {
  * @param {Object} team
  * @return {function(Object)}
  */
-git.membersHandler = function(team) {
+gs.membersHandler = function(team) {
   return function(members) {
     for (var j = 0; j < members.length; j++) {
-      git.saveTeamsMembers(team, members[j]);
+      gs.saveTeamsMembers(team, members[j]);
     }
   }
 };
@@ -64,11 +64,11 @@ git.membersHandler = function(team) {
  * @param {Object} team
  * @return {function(Object)}
  */
-git.teamHandler = function(team) {
+gs.teamHandler = function(team) {
   return function(project) {
     for (var i = 0; i < project.length; i++) {
-      git.getProjectId(function(projectid, project) {
-        git.saveTeamsProjects(team, project, projectid);
+      gs.getProjectId(function(projectid, project) {
+        gs.saveTeamsProjects(team, project, projectid);
       },project[i]);
     }
   }
@@ -83,7 +83,7 @@ git.teamHandler = function(team) {
 var fileNameHandler = function(id, sha) {
   return function(shaCommit) {
     for (var j = 0; j < shaCommit[0].files.length; j++) {
-      git.saveFileName(sha, shaCommit[0].files[j].filename, id);
+      gs.saveFileName(sha, shaCommit[0].files[j].filename, id);
     }
   }
 };
@@ -94,12 +94,12 @@ var fileNameHandler = function(id, sha) {
  * @param {Object} project
  * @return {function(Object)}
  */
-git.commitsHandler = function(callback, project) {
+gs.commitsHandler = function(callback, project) {
   return function(commits) {
     var commitsLength = commits.length;
     if (commitsLength) {
       for (var j = 0, i = 0; j < commitsLength; j++) {
-        git.saveProjectCommits(function() {
+        gs.saveProjectCommits(function() {
           if (++i === commitsLength) {
             callback();
           }
@@ -114,14 +114,14 @@ git.commitsHandler = function(callback, project) {
  * Заполнение базы
  * @this {Object}
  */
-git.populateDB = function() {
+gs.populateDB = function() {
 
   yaa.sequence([
 
-    git.populateProject(),
-    git.team,
-    git.populateCommit,
-    git.populateFilesName
+    gs.populateProject(),
+    gs.team,
+    gs.populateCommit,
+    gs.populateFilesName
 
   ]).call(this, function() {
     console.log('well done');
@@ -133,12 +133,12 @@ git.populateDB = function() {
  * @param {!yaa.CompleteHandler} complete
  * @param {!yaa.ErrorHandler} cancel
  */
-git.team = function(complete, cancel) {
-  git.getTeamsList(function(teams) {
+gs.team = function(complete, cancel) {
+  gs.getTeamsList(function(teams) {
     for (var i = 0; i < teams.length; i++) {
-      git.saveTeamList(teams[i]);
-      git.getTeamsProjects(git.teamHandler(teams[i]), teams[i]);
-      git.getTeamsMembers(git.membersHandler(teams[i]), teams[i]);
+      gs.saveTeamList(teams[i]);
+      gs.getTeamsProjects(gs.teamHandler(teams[i]), teams[i]);
+      gs.getTeamsMembers(gs.membersHandler(teams[i]), teams[i]);
     }
     complete();
   });
@@ -149,11 +149,11 @@ git.team = function(complete, cancel) {
 // * @param {!yaa.CompleteHandler} complete
 // * @param {!yaa.ErrorHandler} cancel
 // */
-//git.populateProject = function(complete, cancel) {
-//  git.getProjects(function(projects) {
+//gs.populateProject = function(complete, cancel) {
+//  gs.getProjects(function(projects) {
 //    var projectLength = projects.length;
 //    for (var i = 0, j = 0; i < projectLength; i++) {
-//      git.saveProjects(function() {
+//      gs.saveProjects(function() {
 //        if (++j === projectLength) {
 //          complete();
 //        }
@@ -166,11 +166,11 @@ git.team = function(complete, cancel) {
 /**
  * @return {!yaa.Step}
  */
-git.populateProject = function() {
+gs.populateProject = function() {
   return yaa.sequence([
-    git.getProjects,
+    gs.getProjects,
     yaa.proc.parallel(
-        git.saveProjects,
+        gs.saveProjects,
         yaa.iterator.array()
     )
   ]);
@@ -180,7 +180,7 @@ git.populateProject = function() {
 /**
  * @param {function()} callback
  */
-git.populateCommit = function(callback) {
+gs.populateCommit = function(callback) {
   function getProject(callback) {
     pg.exec('SELECT git.project.name as name, ' +
         'git.project.id as id ' +
@@ -194,7 +194,7 @@ git.populateCommit = function(callback) {
     var projectLength = project.length;
     console.log(projectLength);
     for (var i = 0, j = 0; i < projectLength; i++) {
-      git.getProjectCommits(git.commitsHandler(function() {
+      gs.getProjectCommits(gs.commitsHandler(function() {
         if (++j === projectLength) {
           callback();
         }
@@ -208,10 +208,10 @@ git.populateCommit = function(callback) {
 /**
  *
  */
-git.populateFilesName = function() {
+gs.populateFilesName = function() {
 
   function getCommit(callback) {
-    pg.exec(' SELECT  git.commits.sha as sha, ' +
+    pg.exec('SELECT  git.commits.sha as sha, ' +
         'git.project.name as name, ' +
         'git.project.id as id ' +
         'FROM git.commits ' +
@@ -225,7 +225,7 @@ git.populateFilesName = function() {
 
   getCommit(function(projectCommits) {
     for (var j = 0; j < projectCommits.length; j++) {
-      git.getFileName(fileNameHandler(projectCommits[j].id,
+      gs.getFileName(fileNameHandler(projectCommits[j].id,
           projectCommits[j].sha), projectCommits[j].sha,
               projectCommits[j].name);
     }
@@ -240,11 +240,11 @@ git.populateFilesName = function() {
  * @param {string} path
  * @param {function(Array)} callback
  */
-git.apiRequest = function(path, callback) {
+gs.apiRequest = function(path, callback) {
   var thisArray = [];
   var page = 1;
   function send(page) {
-    git.sendRequest(path + '?page=' + page, function(array) {
+    gs.sendRequest(path + '?page=' + page, function(array) {
       if (array.length === 100) {
         thisArray = thisArray.concat(array);
         send(++page);
@@ -263,11 +263,11 @@ git.apiRequest = function(path, callback) {
  * @param {string} path
  * @param {function(!Object)} callback
  */
-git.sendRequest = function(path, callback) {
+gs.sendRequest = function(path, callback) {
   var options = {
     host: 'api.github.com',
     method: 'GET',
-    path: '' + path + '&&per_page=100' + git.date,
+    path: '' + path + '&&per_page=100' + gs.date,
     headers:
         {'User-Agent': 'https://api.github.com/meta'},
     auth: 'PrincipalLewis:bezdyk666'
@@ -294,20 +294,20 @@ git.sendRequest = function(path, callback) {
 /**
  *
  */
-git.cleanAll = function() {
-  git.cleanTable('git.teamsmembers');
-  git.cleanTable('git.teams');
-  git.cleanTable('git.commits');
-  git.cleanTable('git.project');
-  git.cleanTable('git.teamsprojects');
-  git.cleanTable('git.filesname');
+gs.cleanAll = function() {
+  gs.cleanTable('git.teamsmembers');
+  gs.cleanTable('git.teams');
+  gs.cleanTable('git.commits');
+  gs.cleanTable('git.project');
+  gs.cleanTable('git.teamsprojects');
+  gs.cleanTable('git.filesname');
 };
 
 
 /**
  * @param {function(string)} callback
  */
-git.getLastDate = function(callback) {
+gs.getLastDate = function(callback) {
   pg.exec('SELECT git.commits.date AS date ' +
       'FROM git.commits ' +
       'ORDER BY date DESC ',
@@ -320,22 +320,22 @@ git.getLastDate = function(callback) {
 /**
  * точка входа
  */
-git.init = function() {
-  git.getLastDate(function(lastDate) {
-    git.sendDate(lastDate);
-    git.populateDB();
+gs.init = function() {
+  gs.getLastDate(function(lastDate) {
+    gs.sendDate(lastDate);
+    gs.populateDB();
   });
-  //git.cleanTable('git.filesname');
-  //git.cleanAll();
-  //git.cleanTable('git.commits');
-  //git.cleanTable('git.filesname');
+  //gs.cleanTable('gs.filesname');
+  //gs.cleanAll();
+  //gs.cleanTable('gs.commits');
+  //gs.cleanTable('gs.filesname');
 };
 
 /**
  * @param {function(Array)} callback
  */
-git.getTeamsList = function(callback) {
-  git.apiRequest('/orgs/LiveTex/teams', function(teams) {
+gs.getTeamsList = function(callback) {
+  gs.apiRequest('/orgs/LiveTex/teams', function(teams) {
     callback(teams);
   });
 };
@@ -345,8 +345,8 @@ git.getTeamsList = function(callback) {
  * @param {function(Array)} callback
  * @param {Object} team
  */
-git.getTeamsMembers = function(callback, team) {
-  git.apiRequest('/teams/' + team.id + '/members', function(members) {
+gs.getTeamsMembers = function(callback, team) {
+  gs.apiRequest('/teams/' + team.id + '/members', function(members) {
     callback(members);
   });
 };
@@ -356,8 +356,8 @@ git.getTeamsMembers = function(callback, team) {
  * @param {!yaa.CompleteHandler} complete
  * @param {!yaa.ErrorHandler} cancel
  */
-git.getProjects = function(complete, cancel) {
-  git.apiRequest('/orgs/LiveTex/repos', function(projects) {
+gs.getProjects = function(complete, cancel) {
+  gs.apiRequest('/orgs/LiveTex/repos', function(projects) {
     complete(projects);
   });
 };
@@ -367,8 +367,8 @@ git.getProjects = function(complete, cancel) {
  * @param {function(Object)} complete
  * @param {Object} project
  */
-git.getProjectCommits = function(complete, project) {
-  git.apiRequest('/repos/LiveTex/' + project.name + '/commits',
+gs.getProjectCommits = function(complete, project) {
+  gs.apiRequest('/repos/LiveTex/' + project.name + '/commits',
       function(commits) {
         complete(commits);
       });
@@ -378,15 +378,15 @@ git.getProjectCommits = function(complete, project) {
 /**
  * @type {number}
  */
-git.vazuzu = 0;
+gs.vazuzu = 0;
 
 
 /**
  * @param {function(Array)} callback
  * @param {Object} team
  */
-git.getTeamsProjects = function(callback, team) {
-  git.apiRequest('/teams/' + team.id + '/repos',
+gs.getTeamsProjects = function(callback, team) {
+  gs.apiRequest('/teams/' + team.id + '/repos',
       function(projects) {
         callback(projects);
       });
@@ -397,7 +397,7 @@ git.getTeamsProjects = function(callback, team) {
  * @param {function(Object, Object)} callback
  * @param {Object} project
  */
-git.getProjectId = function(callback, project) {
+gs.getProjectId = function(callback, project) {
   pg.exec('SELECT git.project.id, git.project.name  FROM git.project WHERE ' +
       'git.project.name = \'' + project.name + '\'', function(table) {
         if (table.length) {  // check it
@@ -412,8 +412,8 @@ git.getProjectId = function(callback, project) {
  * @param {Object} sha
  * @param {Object} projectName
  */
-git.getFileName = function(callback, sha, projectName) {
-  git.apiRequest('/repos/LiveTex/' + projectName + '/commits/' + sha,
+gs.getFileName = function(callback, sha, projectName) {
+  gs.apiRequest('/repos/LiveTex/' + projectName + '/commits/' + sha,
       function(teams) {
         callback(teams);
       });
@@ -424,7 +424,7 @@ git.getFileName = function(callback, sha, projectName) {
  * @param {!yaa.CompleteHandler} complete
  * @param {!yaa.ErrorHandler} cancel
  */
-git.getDBProject = function(complete, cancel) {
+gs.getDBProject = function(complete, cancel) {
   pg.exec('SELECT git.project.name as name, ' +
       'git.project.id as id ' +
       'FROM git.project',
@@ -435,7 +435,7 @@ git.getDBProject = function(complete, cancel) {
 /**
  * @param {Object} team
  */
-git.saveTeamList = function(team) {
+gs.saveTeamList = function(team) {
   pg.exec('INSERT INTO git.teams (name, id) VALUES ' +
       '(\'' + team.name + '\', ' + team.id + ')', function() {
         console.log('team added');
@@ -451,7 +451,7 @@ git.saveTeamList = function(team) {
  * @param {Object} team
  * @param {Object} member
  */
-git.saveTeamsMembers = function(team, member) {
+gs.saveTeamsMembers = function(team, member) {
   pg.exec('INSERT INTO git.teamsmembers (login, idt) VALUES ' +
       '(\'' + member.login + "\', " + team.id + ')',
       function() {console.log('teamMember added')}, function(err) {
@@ -467,7 +467,7 @@ git.saveTeamsMembers = function(team, member) {
  * @param {!yaa.ErrorHandler} cancel
  * @param {Object} project
  */
-git.saveProjects = function(complete, cancel, project) {
+gs.saveProjects = function(complete, cancel, project) {
   pg.exec('INSERT INTO git.project (name, id) VALUES (\'' + project.name +
       '\',' + project.id + ')',
       function() {
@@ -488,7 +488,7 @@ git.saveProjects = function(complete, cancel, project) {
  * @param {Object} commit
  * @param {Object} project
  */
-git.saveProjectCommits = function(complete, commit, project) {
+gs.saveProjectCommits = function(complete, commit, project) {
   if (commit && commit.committer && commit.commit) {
     pg.exec('INSERT INTO git.commits  (sha, login, date, projectid) ' +
         'VALUES (\'' + commit.sha + '\', \'' + commit.committer.login +
@@ -514,8 +514,7 @@ git.saveProjectCommits = function(complete, commit, project) {
  * @param {Object} project
  * @param {Object} projectId
  */
-git.saveTeamsProjects = function(team, project, projectId) {
-
+gs.saveTeamsProjects = function(team, project, projectId) {
   pg.exec('INSERT INTO git.teamsprojects  (projectname, teamid, projectid) ' +
       'VALUES (\'' + project.name + '\',\'' + team.id + '\',\'' +
       projectId + '\')',
@@ -532,7 +531,7 @@ git.saveTeamsProjects = function(team, project, projectId) {
  * @param {Object} filename
  * @param {number} projectId
  */
-git.saveFileName = function(sha, filename, projectId) {
+gs.saveFileName = function(sha, filename, projectId) {
   pg.exec('INSERT INTO git.filesname (sha, filename, projectid) VALUES ' +
       '(\'' + sha + '\',\'' + filename + '\',\'' + projectId + '\')',
       function() {
@@ -544,4 +543,4 @@ git.saveFileName = function(sha, filename, projectId) {
       });
 };
 
-git.init();
+gs.init();

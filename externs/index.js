@@ -1,40 +1,40 @@
 /**
  * @namespace
  */
-var git = {};
+var gs = {};
 
 
 /**
  * @param {string=} opt_since format: YYYY-MM-DD
  * @param {string=} opt_until format: YYYY-MM-DD
  */
-git.sendDate = function(opt_since, opt_until) {};
+gs.sendDate = function(opt_since, opt_until) {};
 
 
 /**
  * @namespace
  */
-git.date
+gs.date
 
 
 /**
  * @param {string} Table
  */
-git.cleanTable = function(Table) {};
+gs.cleanTable = function(Table) {};
 
 
 /**
  * @param {Object} team
  * @return {function(Object)}
  */
-git.membersHandler = function(team) {};
+gs.membersHandler = function(team) {};
 
 
 /**
  * @param {Object} team
  * @return {function(Object)}
  */
-git.teamHandler = function(team) {};
+gs.teamHandler = function(team) {};
 
 
 /**
@@ -50,118 +50,118 @@ var fileNameHandler = function(id, sha) {};
  * @param {Object} project
  * @return {function(Object)}
  */
-git.commitsHandler = function(callback, project) {};
+gs.commitsHandler = function(callback, project) {};
 
 
 /**
  * Заполнение базы
  * @this {Object}
  */
-git.populateDB = function() {};
+gs.populateDB = function() {};
 
 
 /**
  * @param {!yaa.CompleteHandler} complete
  * @param {!yaa.ErrorHandler} cancel
  */
-git.team = function(complete, cancel) {};
+gs.team = function(complete, cancel) {};
 
 
 /**
  * @return {!yaa.Step}
  */
-git.populateProject = function() {};
+gs.populateProject = function() {};
 
 
 /**
  * @param {function()} callback
  */
-git.populateCommit = function(callback) {};
+gs.populateCommit = function(callback) {};
 
 
 /**
  *
  */
-git.populateFilesName = function() {};
+gs.populateFilesName = function() {};
 
 
 /**
  * @param {string} path
  * @param {function(Array)} callback
  */
-git.apiRequest = function(path, callback) {};
+gs.apiRequest = function(path, callback) {};
 
 
 /**
  * @param {string} path
  * @param {function(!Object)} callback
  */
-git.sendRequest = function(path, callback) {};
+gs.sendRequest = function(path, callback) {};
 
 
 /**
  *
  */
-git.cleanAll = function() {};
+gs.cleanAll = function() {};
 
 
 /**
  * @param {function(string)} callback
  */
-git.getLastDate = function(callback) {};
+gs.getLastDate = function(callback) {};
 
 
 /**
  * точка входа
  */
-git.init = function() {};
+gs.init = function() {};
 
 
 /**
  * @param {function(Array)} callback
  */
-git.getTeamsList = function(callback) {};
+gs.getTeamsList = function(callback) {};
 
 
 /**
  * @param {function(Array)} callback
  * @param {Object} team
  */
-git.getTeamsMembers = function(callback, team) {};
+gs.getTeamsMembers = function(callback, team) {};
 
 
 /**
  * @param {!yaa.CompleteHandler} complete
  * @param {!yaa.ErrorHandler} cancel
  */
-git.getProjects = function(complete, cancel) {};
+gs.getProjects = function(complete, cancel) {};
 
 
 /**
  * @param {function(Object)} complete
  * @param {Object} project
  */
-git.getProjectCommits = function(complete, project) {};
+gs.getProjectCommits = function(complete, project) {};
 
 
 /**
  * @type {number}
  */
-git.vazuzu;
+gs.vazuzu;
 
 
 /**
  * @param {function(Array)} callback
  * @param {Object} team
  */
-git.getTeamsProjects = function(callback, team) {};
+gs.getTeamsProjects = function(callback, team) {};
 
 
 /**
  * @param {function(Object, Object)} callback
  * @param {Object} project
  */
-git.getProjectId = function(callback, project) {};
+gs.getProjectId = function(callback, project) {};
 
 
 /**
@@ -169,27 +169,27 @@ git.getProjectId = function(callback, project) {};
  * @param {Object} sha
  * @param {Object} projectName
  */
-git.getFileName = function(callback, sha, projectName) {};
+gs.getFileName = function(callback, sha, projectName) {};
 
 
 /**
  * @param {!yaa.CompleteHandler} complete
  * @param {!yaa.ErrorHandler} cancel
  */
-git.getDBProject = function(complete, cancel) {};
+gs.getDBProject = function(complete, cancel) {};
 
 
 /**
  * @param {Object} team
  */
-git.saveTeamList = function(team) {};
+gs.saveTeamList = function(team) {};
 
 
 /**
  * @param {Object} team
  * @param {Object} member
  */
-git.saveTeamsMembers = function(team, member) {};
+gs.saveTeamsMembers = function(team, member) {};
 
 
 /**
@@ -197,7 +197,7 @@ git.saveTeamsMembers = function(team, member) {};
  * @param {!yaa.ErrorHandler} cancel
  * @param {Object} project
  */
-git.saveProjects = function(complete, cancel, project) {};
+gs.saveProjects = function(complete, cancel, project) {};
 
 
 /**
@@ -205,7 +205,7 @@ git.saveProjects = function(complete, cancel, project) {};
  * @param {Object} project
  * @param {Object} projectId
  */
-git.saveTeamsProjects = function(team, project, projectId) {};
+gs.saveTeamsProjects = function(team, project, projectId) {};
 
 
 /**
@@ -213,7 +213,7 @@ git.saveTeamsProjects = function(team, project, projectId) {};
  * @param {Object} filename
  * @param {number} projectId
  */
-git.saveFileName = function(sha, filename, projectId) {};
+gs.saveFileName = function(sha, filename, projectId) {};
 
 
 

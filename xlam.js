@@ -423,4 +423,16 @@ git.saveFileName = function(sha, filename, projectid) {
       }
     });
 };
-
+/*
+SELECT git.filesname.filename as filename,
+  git.project.name as projectname,
+  git.teams.name as teamname,
+  COUNT(filename) as COUNT
+FROM git.filesname
+LEFT JOIN git.project ON git.filesname.projectid = git.project.id
+LEFT JOIN git.commits USING(sha,projectid)
+LEFT JOIN git.teamsmembers USING(login)
+LEFT JOIN git.teams ON git.teamsmembers.idt = git.teams.id
+WHERE git.commits.date > '2015-05-10' AND git.teams.name  NOT LIKE '%Read'
+GROUP BY filename, projectname,teamname
+ORDER BY filename,COUNT DESC*/
