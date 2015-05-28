@@ -145,24 +145,6 @@ gs.team = function(complete, cancel) {
 };
 
 
-///**
-// * @param {!yaa.CompleteHandler} complete
-// * @param {!yaa.ErrorHandler} cancel
-// */
-//gs.populateProject = function(complete, cancel) {
-//  gs.getProjects(function(projects) {
-//    var projectLength = projects.length;
-//    for (var i = 0, j = 0; i < projectLength; i++) {
-//      gs.saveProjects(function() {
-//        if (++j === projectLength) {
-//          complete();
-//        }
-//      }, projects[i]);
-//    }
-//  });
-//};
-
-
 /**
  * @return {!yaa.Step}
  */
@@ -325,10 +307,6 @@ gs.init = function() {
     gs.sendDate(lastDate);
     gs.populateDB();
   });
-  //gs.cleanTable('gs.filesname');
-  //gs.cleanAll();
-  //gs.cleanTable('gs.commits');
-  //gs.cleanTable('gs.filesname');
 };
 
 /**
