@@ -252,19 +252,23 @@ gs.sendRequest = function(path, callback) {
     path: '' + path + '&&per_page=100' + gs.date,
     headers:
         {'User-Agent': 'https://api.github.com/meta'},
-    auth: 'PrincipalLewis:bezdyk666'
+    auth: ''
   };
   var request = https.request(options, function(response) {
-    var body = '';
-    response.on('data', function(chunk) {
-      body += chunk;
-    });
-    response.on('end', function() {
-      //console.log(path);
-      var json = JSON.parse(body);
-      //console.log(json);
-      callback(json);
-    });
+    if (!options.auth) {
+      console.log('Пропешите гит логин и пароль');
+    } else {
+      var body = '';
+      response.on('data', function (chunk) {
+        body += chunk;
+      });
+      response.on('end', function () {
+        //console.log(path);
+        var json = JSON.parse(body);
+        //console.log(json);
+        callback(json);
+      });
+    }
   });
   request.on('error', function(e) {
     console.error('and the error is ' + e);
